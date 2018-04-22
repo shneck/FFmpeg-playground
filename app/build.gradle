@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.mmalay.ffmpeg"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            // let gradle pack the shared library into apk
+            jniLibs.srcDirs = ['src/main/libs/ffmpeg/lib']
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+
+        }
+    }
+    flavorDimensions 'cpuArch'
+    productFlavors {
+        arm {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'armeabi'
+            }
+        }
+        arm7 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'armeabi-v7a'
+            }
+        }
+        x86 {
+            dimension 'cpuArch'
+            ndk {
+                abiFilter 'x86'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+}
